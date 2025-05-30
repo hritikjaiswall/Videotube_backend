@@ -8,7 +8,7 @@ app.use(cors({
     origin: process.env.CORS_ORGIN,
     credentials: true
 }));
-app.use(express.json({limit:"16kbps"}));
+app.use(express.json({limit:"1mb"}));
 app.use(express.urlencoded({extended: true,limit:"16kbps"}));
 app.use(express.static('public'));
 app.use(cookieParser());
