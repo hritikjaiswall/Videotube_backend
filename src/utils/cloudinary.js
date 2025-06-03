@@ -17,6 +17,7 @@ import fs from 'fs';
                 resource_type: 'auto' // Automatically detect the resource type (image, video, etc.)
             })
             console.log("File is sucessfully uploaded", result.secure_url);
+            fs.unlinkSync(filePath); // Remove the file from local storage after upload
             return result; // Return the secure URL of the uploaded file
         } catch (error) {
             fs.unlinkSync(filePath); // Remove the file from local storage after upload
