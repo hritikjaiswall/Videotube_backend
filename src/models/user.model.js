@@ -51,7 +51,7 @@ const userSchema = new Schema({
     })
 
     userSchema.pre("save",async function(next){
-        if(!this.isModified("passsword")) return next();
+        if(!this.isModified("password")) return next();
         this.password = await bcrypt.hash(this.password, 10);
         next();
     })
@@ -80,10 +80,10 @@ const userSchema = new Schema({
          return jwt.sign({
             _id: this._id
         },
-        process.env.ACCESS_REFRESH_SECRET,
+        process.env.REFRESH_TOKEN_SECRET,
 
         {
-            expiresIn: process.env.CCESS_REFRESH_EXPIRY || "10d"
+            expiresIn: process.env.REFRESH_TOKEN_EXPIRY || "10d"
         }
         )
     }
