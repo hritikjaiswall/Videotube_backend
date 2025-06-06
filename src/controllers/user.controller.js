@@ -181,12 +181,46 @@ const logoutUser = asyncHandler(async(req,res)=>{
         throw new ApiError(401, error?.message || "Invalid refresh token");
     }
 });
+
+const changeCurrentPassword = asyncHandler(async(req,res)=>{
+    const{oldPassword, newPassword} = req.body;
+    if(!oldPassword || !newPassword){
+        throw new ApiError(400, "Old password and new password are required");
+    }
+    const user = await User.findById(req.user?._id);
+    if(!user){
+        throw new ApiError(404, "User not found");
+    }
+    const isPasswordCorrect = await user.isPasswordCorrect(oldPassword)
+    if(!isPasswordCorrect){
+        throw new ApiError(401, "Old password is incorrect");
+    }
+    user.password = newPassword;
+    await user.save(validateBeforeSave = false);
+    return res.status(200).json(
+        new ApiResponse(200, null, "Password changed successfully")
+    );
+
+})
+
+const getCurrentUser = asyncHandler(async(res,res)=>{
+    // const user = await User.findById(req.user?._id).select("-password -refreshToken");
+    return res.status(200).json(
+        new ApiResponse(200, req.user, "Current user fetched successfully")
+    );
+})
+
+const updateAccountDetails = asyncHandler(async(req,res)=>{
+    const {fullName, email, username} = req.body;
+})
  
 export { 
     registerUser,
     loginUser,
     logoutUser,
-    refreshAccessToken
+refreshAccessToken,
+changeCurrentPassword,
+getCurrentUser
 };
 
 //STEPS TO CREATE USER
