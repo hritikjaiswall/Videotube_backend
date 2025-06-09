@@ -302,31 +302,31 @@ const getUserChannelProfile = asyncHandler(async (req, res) => {
                     $size: "$subscribedTo"
                 },
                 isSubscribed: {
-                    $cond:{
-                        if:{
+                    $cond: {
+                        if: {
                             $in: [req.user?._id, "$subscribedTo.subscriber"]
                         },
                         then: true,
                         else: false
-                        }
                     }
                 }
-            },
-                {
-                    $project: {
-                        fullName: 1,
-                        email: 1,
-                        username: 1,
-                        avatar: 1,
-                        coverImage: 1,
-                        subscribersCount: 1,
-                        subscriberedTo: 1,
-                        isSubscribed: 1
-                    }
-
             }
+        },
+        {
+            $project: {
+                fullName: 1,
+                email: 1,
+                username: 1,
+                avatar: 1,
+                coverImage: 1,
+                subscribersCount: 1,
+                subscriberedTo: 1,
+                isSubscribed: 1
+            }
+
+        }
     ])
-    if(!channel?.length){
+    if (!channel?.length) {
         throw new ApiError(404, "Channel not found");
     }
     console.log(channel);
@@ -334,6 +334,58 @@ const getUserChannelProfile = asyncHandler(async (req, res) => {
         new ApiResponse(200, channel[0], "Channel profile fetched successfully")
     )
 })
+
+const getWatchHistory = asyncHandler(async (req, res) => {
+    const user = await User.aggregate([
+        {
+            $match: {
+                _id: new mongoose.Types.ObjectId(req.user._id)
+
+            }
+        }, {
+            $lookup: {
+                from: "videos",
+                localField: "watchHistory",
+                foreignField: "_id",
+                as: "watchedVideos",
+                pipeline: [
+                    {
+                        $lookup: {
+                            from: "users",
+                            localField: "owner",
+                            foreignField: "_id",
+                            as: "owner",
+                            pipeline: [
+                                {
+                                    $project: {
+                                        fullName: 1,
+                                        username: 1,
+                                        avatar: 1
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        $addFields: {
+                            owner: {
+                                $first: "$owner"
+                            }
+                        }
+                    }
+                ]
+            }
+
+        }, {
+
+        }
+    ])
+    return res.status(200).json(
+        new ApiResponse(200, user[0]?.watchedVideos || [], "Watch history fetched successfully")
+    )
+
+})
+
 
 export {
     registerUser,
@@ -345,6 +397,9 @@ export {
     updateAccountDetails,
     updateUserAvatar,
     updateUserCoverImage,
+    getUserChannelProfile,
+    getWatchHistory
+
 };
 
 //STEPS TO CREATE USER
