@@ -90,7 +90,7 @@ Make sure the following tools are installed on your system:
 Start the development server:
 
 ```bash
-npm start
+npm run dev
 ```
 
 ---
