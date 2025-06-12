@@ -1,6 +1,4 @@
-Here's your project README formatted for a GitHub repository, following common conventions and using Markdown appropriately:
 
----
 
 # 🎥 VIDEOTUBE\_BACKEND
 
@@ -114,5 +112,3 @@ Feel free to check the [issues page](https://github.com/hritikjaiswall/Videotube
 
 
 ---
-
-Let me know if you'd like to add badges for build status, code coverage, or include API documentation!

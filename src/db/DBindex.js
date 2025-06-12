@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
 import {DB_NAME} from "../constants.js";
-const MONGO_URI= 'mongodb+srv://hritik:hritikcompro@cluster0.ussivfp.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
 console.log("MongoDB URI:", typeof process.env.MONGO_URI);
 console.log("NAME:", DB_NAME);
 const URL = process.env.MONGO_URI;
